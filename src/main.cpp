@@ -13,6 +13,10 @@ void showMenu() {
     std::cout << "5. Show user profile\n";
     std::cout << "6. Export matches to CSV\n";
     std::cout << "7. Export groups to CSV\n";
+    std::cout << "8. Search users by name\n";
+    std::cout << "9. Show event attendees\n";
+    std::cout << "10. Recommend events for user\n";
+    std::cout << "11. Export profiles to CSV\n";
     std::cout << "0. Exit\n";
     std::cout << "Choice: ";
 }
@@ -120,6 +124,28 @@ int main() {
                 std::cout << "Saved to " << filePath << "\n";
             } else {
                 std::cout << "Could not export groups. Check event name.\n";
+            }
+        } else if (choice == 8) {
+            std::string keyword = readLine("Search name: ");
+            matcher.printUserSearch(keyword);
+        } else if (choice == 9) {
+            std::string eventName = readLine("Event name: ");
+            matcher.printEventAttendees(eventName);
+        } else if (choice == 10) {
+            int userId;
+            int limit;
+            std::cout << "User ID: ";
+            std::cin >> userId;
+            std::cout << "Number of recommendations: ";
+            std::cin >> limit;
+            clearInput();
+            matcher.printEventRecommendations(userId, limit);
+        } else if (choice == 11) {
+            std::string filePath = "output/profiles.csv";
+            if (matcher.exportProfiles(filePath)) {
+                std::cout << "Saved to " << filePath << "\n";
+            } else {
+                std::cout << "Could not export profiles.\n";
             }
         } else {
             std::cout << "Invalid choice.\n";

@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <cctype>
 
 void EventMatcher::addUser(const User& user) {
     users[user.id] = user;
@@ -59,6 +60,69 @@ std::vector<std::string> EventMatcher::getEvents() const {
 std::vector<int> EventMatcher::getAttendees(const std::string& eventName) const {
     if (!hasEvent(eventName)) return {};
     return eventUsers.at(eventName);
+}
+
+std::string EventMatcher::toLower(const std::string& text) const {
+    std::string result;
+    for (char ch : text) {
+        result += static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+    }
+    return result;
+}
+
+std::vector<int> EventMatcher::searchUsersByName(const std::string& keyword) const {
+    std::vector<int> result;
+    std::string searchText = toLower(keyword);
+    if (searchText.empty()) return result;
+
+    for (const auto& item : users) {
+        if (toLower(item.second.name).find(searchText) != std::string::npos) {
+            result.push_back(item.first);
+        }
+    }
+
+    std::sort(result.begin(), result.end(), [&](int a, int b) {
+        return users.at(a).name < users.at(b).name;
+    });
+    return result;
+}
+
+std::vector<std::pair<std::string, double>> EventMatcher::recommendEventsForUser(int userId, int limit) const {
+    std::vector<std::pair<std::string, double>> recommendations;
+    if (!hasUser(userId) || limit <= 0) return recommendations;
+
+    const User& user = users.at(userId);
+    for (const auto& eventItem : eventUsers) {
+        const std::string& eventName = eventItem.first;
+        if (user.events.find(eventName) != user.events.end()) continue;
+
+        double bestScore = 0.0;
+        double totalScore = 0.0;
+        int compared = 0;
+
+        for (int attendeeId : eventItem.second) {
+            if (attendeeId == userId) continue;
+            MatchResult match = compareUsers(userId, attendeeId);
+            bestScore = std::max(bestScore, match.score);
+            totalScore += match.score;
+            compared++;
+        }
+
+        if (compared > 0) {
+            double averageScore = totalScore / compared;
+            double finalScore = (0.70 * bestScore) + (0.30 * averageScore);
+            recommendations.push_back({eventName, finalScore});
+        }
+    }
+
+    std::sort(recommendations.begin(), recommendations.end(), [](const auto& a, const auto& b) {
+        return a.second > b.second;
+    });
+
+    if (static_cast<int>(recommendations.size()) > limit) {
+        recommendations.resize(limit);
+    }
+    return recommendations;
 }
 
 void EventMatcher::buildEventIndex() {
@@ -223,6 +287,33 @@ std::vector<std::vector<int>> EventMatcher::createGroups(const std::string& even
     return groups;
 }
 
+std::string EventMatcher::joinStrings(const std::unordered_set<std::string>& values) const {
+    std::vector<std::string> items(values.begin(), values.end());
+    std::sort(items.begin(), items.end());
+
+    std::string result;
+    for (int i = 0; i < static_cast<int>(items.size()); i++) {
+        result += items[i];
+        if (i + 1 < static_cast<int>(items.size())) result += " | ";
+    }
+    return result.empty() ? "None" : result;
+}
+
+std::string EventMatcher::joinFriendNames(const std::unordered_set<int>& friendIds) const {
+    std::vector<std::string> names;
+    for (int id : friendIds) {
+        if (hasUser(id)) names.push_back(users.at(id).name);
+    }
+    std::sort(names.begin(), names.end());
+
+    std::string result;
+    for (int i = 0; i < static_cast<int>(names.size()); i++) {
+        result += names[i];
+        if (i + 1 < static_cast<int>(names.size())) result += " | ";
+    }
+    return result.empty() ? "None" : result;
+}
+
 void EventMatcher::printUser(int userId) const {
     if (!hasUser(userId)) {
         std::cout << "User not found.\n";
@@ -230,10 +321,73 @@ void EventMatcher::printUser(int userId) const {
     }
 
     const User& user = users.at(userId);
-    std::cout << user.id << ". " << user.name << "\n";
-    std::cout << "Comfort level: " << user.comfortLevel << "\n";
+    std::cout << "\nProfile\n";
+    std::cout << "ID: " << user.id << "\n";
+    std::cout << "Name: " << user.name << "\n";
+    std::string handle;
+    for (char ch : toLower(user.name)) {
+        if (std::isalnum(static_cast<unsigned char>(ch))) handle += ch;
+    }
+    std::cout << "Handle: @" << handle << user.id << "\n";
+    std::cout << "Comfort level: " << user.comfortLevel << "/5\n";
     std::cout << "Preferred group size: " << user.preferredGroupSize << "\n";
-    std::cout << "Friends: " << user.friends.size() << "\n";
+    std::cout << "Interests: " << joinStrings(user.interests) << "\n";
+    std::cout << "Availability: " << joinStrings(user.availability) << "\n";
+    std::cout << "Events: " << joinStrings(user.events) << "\n";
+    std::cout << "Friends (" << user.friends.size() << "): " << joinFriendNames(user.friends) << "\n";
+}
+
+void EventMatcher::printUserSearch(const std::string& keyword) const {
+    std::vector<int> results = searchUsersByName(keyword);
+    std::cout << "\nSearch results for '" << keyword << "':\n";
+
+    if (results.empty()) {
+        std::cout << "No users found.\n";
+        return;
+    }
+
+    for (int id : results) {
+        const User& user = users.at(id);
+        std::cout << user.id << ". " << user.name
+                  << " | Events: " << user.events.size()
+                  << " | Friends: " << user.friends.size() << "\n";
+    }
+}
+
+void EventMatcher::printEventAttendees(const std::string& eventName) const {
+    if (!hasEvent(eventName)) {
+        std::cout << "Event not found.\n";
+        return;
+    }
+
+    std::cout << "\nAttendees for " << eventName << ":\n";
+    for (int id : eventUsers.at(eventName)) {
+        const User& user = users.at(id);
+        std::cout << user.id << ". " << user.name
+                  << " | Comfort: " << user.comfortLevel
+                  << " | Preferred group: " << user.preferredGroupSize << "\n";
+    }
+}
+
+void EventMatcher::printEventRecommendations(int userId, int limit) const {
+    if (!hasUser(userId)) {
+        std::cout << "User not found.\n";
+        return;
+    }
+
+    std::vector<std::pair<std::string, double>> recommendations = recommendEventsForUser(userId, limit);
+    std::cout << "\nRecommended new events for " << users.at(userId).name << ":\n";
+
+    if (recommendations.empty()) {
+        std::cout << "No new event recommendations available.\n";
+        return;
+    }
+
+    for (int i = 0; i < static_cast<int>(recommendations.size()); i++) {
+        std::cout << i + 1 << ". " << recommendations[i].first
+                  << " | Score: " << std::fixed << std::setprecision(1)
+                  << recommendations[i].second * 100 << "%\n";
+    }
 }
 
 void EventMatcher::printTopMatches(int userId, const std::string& eventName, int limit) const {
@@ -352,6 +506,33 @@ bool EventMatcher::exportGroups(const std::string& eventName, double threshold, 
                  << csvEscape(users.at(userId).name) << ","
                  << groups[i].size() << "\n";
         }
+    }
+
+    return true;
+}
+
+
+bool EventMatcher::exportProfiles(const std::string& filePath) const {
+    std::ofstream file(filePath);
+    if (!file.is_open()) return false;
+
+    file << "user_id,name,comfort_level,preferred_group_size,interests,availability,events,friends_count,friend_names\n";
+
+    std::vector<int> ids;
+    for (const auto& item : users) ids.push_back(item.first);
+    std::sort(ids.begin(), ids.end());
+
+    for (int id : ids) {
+        const User& user = users.at(id);
+        file << user.id << ","
+             << csvEscape(user.name) << ","
+             << user.comfortLevel << ","
+             << user.preferredGroupSize << ","
+             << csvEscape(joinStrings(user.interests)) << ","
+             << csvEscape(joinStrings(user.availability)) << ","
+             << csvEscape(joinStrings(user.events)) << ","
+             << user.friends.size() << ","
+             << csvEscape(joinFriendNames(user.friends)) << "\n";
     }
 
     return true;

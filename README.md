@@ -912,8 +912,4 @@ The idea is not to copy Instagram exactly, but to take the useful social feature
 - Add email or notification-based group invitations
 - Add admin tools for university societies and event organisers
 
----
 
-## Author
-
-Created as a practical C++ DSA project for solving student event buddy matching.
