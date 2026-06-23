@@ -1,5 +1,6 @@
 #include "DSU.h"
 #include <numeric>
+#include <algorithm>
 
 DSU::DSU(int n) {
     parent.resize(n);

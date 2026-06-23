@@ -11,3 +11,4 @@ run: all
 
 clean:
 	rm -f $(OUT)
+	rm -f output/*.csv

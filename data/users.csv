@@ -1,11 +1,11 @@
-id,name,comfortLevel,preferredGroupSize,interests,availability,events
-1,Megha,3,4,AI|Hackathons|Career Talks|Coding,Friday Evening|Saturday Afternoon,AI Hackathon|Career Fair
-2,Aisha,3,4,AI|Hackathons|Startups|Coding,Friday Evening|Saturday Afternoon,AI Hackathon|Startup Mixer
-3,Priya,2,3,AI|Career Talks|Design|Coding,Friday Evening|Sunday Morning,AI Hackathon|Career Fair
-4,Sara,4,4,Music|Dance|Startups|Design,Saturday Afternoon|Sunday Morning,Startup Mixer|Music Night
-5,Nila,3,3,AI|Design|Hackathons|Robotics,Friday Evening|Saturday Afternoon,AI Hackathon|Robotics Expo
-6,Rohan,2,4,Coding|Gaming|Hackathons|Robotics,Friday Evening|Saturday Night,AI Hackathon|Robotics Expo
-7,Kabir,4,3,Startups|Finance|Career Talks|Public Speaking,Saturday Afternoon|Sunday Morning,Career Fair|Startup Mixer
-8,Emma,3,4,Music|Dance|Photography|Design,Friday Evening|Saturday Night,Music Night|Design Meetup
-9,Leo,1,2,Coding|Gaming|AI|Robotics,Friday Evening|Sunday Morning,AI Hackathon|Robotics Expo
-10,Zara,2,3,Design|Photography|Career Talks|Startups,Saturday Afternoon|Sunday Morning,Design Meetup|Career Fair
+id,name,comfort_level,preferred_group_size,interests,availability,events
+1,Aarav Patel,3,4,AI|Cloud Computing|Data Science,Saturday Morning|Thursday Evening|Tuesday Evening,AI Hackathon|Cybersecurity Workshop
+2,Aisha Singh,1,4,AI|Cloud Computing|Movies|Web Development,Saturday Evening|Saturday Morning|Sunday Afternoon|Thursday Evening,Music Night|Coding Bootcamp|Dance Workshop
+3,Anaya Taylor,2,4,Cloud Computing|Finance|Public Speaking,Saturday Afternoon|Sunday Morning|Thursday Evening,Career Fair|Tech Talk|Cybersecurity Workshop
+4,Arjun Sharma,3,2,Finance|Startups|UI UX,Friday Evening|Tuesday Evening,Coding Bootcamp|Career Fair
+5,Diya Gupta,3,4,Cloud Computing|Movies|Music|Public Speaking|Web Development,Friday Evening|Monday Evening|Saturday Afternoon|Saturday Morning,Music Night|Coding Bootcamp|Startup Mixer
+6,Ishaan Clark,5,3,Finance|Music|Photography|Volunteering,Monday Evening|Saturday Evening|Saturday Morning,Startup Mixer|Music Night
+7,Kavya Mohan,1,3,AI|Cloud Computing|Cybersecurity|Gaming,Monday Evening|Saturday Afternoon,Sports Day|Tech Talk
+8,Megha Thomas,3,3,AI|Cloud Computing|Cybersecurity|Hackathons|Web Development,Friday Evening|Monday Evening|Saturday Morning|Tuesday Evening,Cybersecurity Workshop
+9,Nila Lewis,5,3,Cybersecurity|Data Science|Public Speaking|Web Development,Saturday Afternoon|Saturday Evening|Thursday Evening|Wednesday Afternoon,Cybersecurity Workshop|Career Fair|Music Night
+10,Priya Kapoor,4,2,Dance|Hackathons|Music|Web Development,Saturday Evening|Sunday Afternoon,Music Night|AI Hackathon|Coding Bootcamp

@@ -17,7 +17,13 @@ struct MatchResult {
     int mutualFriends;
 };
 
-struct MatchCompare {
+struct MatchCompareMin {
+    bool operator()(const MatchResult& a, const MatchResult& b) const {
+        return a.score > b.score;
+    }
+};
+
+struct MatchCompareMax {
     bool operator()(const MatchResult& a, const MatchResult& b) const {
         return a.score < b.score;
     }
@@ -27,6 +33,7 @@ class EventMatcher {
 private:
     std::unordered_map<int, User> users;
     std::unordered_map<std::string, std::vector<int>> eventUsers;
+    std::unordered_map<std::string, int> nameToId;
 
     double setSimilarity(const std::unordered_set<std::string>& a,
                          const std::unordered_set<std::string>& b) const;
@@ -40,19 +47,32 @@ private:
     double mutualFriendScore(const User& a, const User& b) const;
     double comfortScore(const User& a, const User& b) const;
     MatchResult compareUsers(int idA, int idB) const;
+    std::string csvEscape(const std::string& text) const;
 
 public:
     void addUser(const User& user);
     void addFriendship(int userA, int userB);
+    bool addFriendshipByName(const std::string& nameA, const std::string& nameB);
     void buildEventIndex();
+
+    bool hasUser(int userId) const;
+    bool hasEvent(const std::string& eventName) const;
+    int userCount() const;
+    int eventCount() const;
+    int getUserIdByName(const std::string& name) const;
+    std::vector<std::string> getEvents() const;
+    std::vector<int> getAttendees(const std::string& eventName) const;
+
     std::vector<MatchResult> getTopMatches(int userId, const std::string& eventName, int limit) const;
     std::vector<std::vector<int>> createGroups(const std::string& eventName, double threshold, int maxGroupSize) const;
+
     void printUser(int userId) const;
     void printTopMatches(int userId, const std::string& eventName, int limit) const;
     void printGroups(const std::string& eventName, double threshold, int maxGroupSize) const;
-    bool hasUser(int userId) const;
-    bool hasEvent(const std::string& eventName) const;
-    std::vector<std::string> getEvents() const;
+    void printStats() const;
+
+    bool exportMatches(const std::string& eventName, int limit, const std::string& filePath) const;
+    bool exportGroups(const std::string& eventName, double threshold, int maxGroupSize, const std::string& filePath) const;
 };
 
 #endif
