@@ -1,0 +1,11 @@
+id,name,comfortLevel,preferredGroupSize,interests,availability,events
+1,Megha,3,4,AI|Hackathons|Career Talks|Coding,Friday Evening|Saturday Afternoon,AI Hackathon|Career Fair
+2,Aisha,3,4,AI|Hackathons|Startups|Coding,Friday Evening|Saturday Afternoon,AI Hackathon|Startup Mixer
+3,Priya,2,3,AI|Career Talks|Design|Coding,Friday Evening|Sunday Morning,AI Hackathon|Career Fair
+4,Sara,4,4,Music|Dance|Startups|Design,Saturday Afternoon|Sunday Morning,Startup Mixer|Music Night
+5,Nila,3,3,AI|Design|Hackathons|Robotics,Friday Evening|Saturday Afternoon,AI Hackathon|Robotics Expo
+6,Rohan,2,4,Coding|Gaming|Hackathons|Robotics,Friday Evening|Saturday Night,AI Hackathon|Robotics Expo
+7,Kabir,4,3,Startups|Finance|Career Talks|Public Speaking,Saturday Afternoon|Sunday Morning,Career Fair|Startup Mixer
+8,Emma,3,4,Music|Dance|Photography|Design,Friday Evening|Saturday Night,Music Night|Design Meetup
+9,Leo,1,2,Coding|Gaming|AI|Robotics,Friday Evening|Sunday Morning,AI Hackathon|Robotics Expo
+10,Zara,2,3,Design|Photography|Career Talks|Startups,Saturday Afternoon|Sunday Morning,Design Meetup|Career Fair
